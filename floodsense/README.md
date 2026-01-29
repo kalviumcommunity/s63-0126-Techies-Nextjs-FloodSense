@@ -123,6 +123,34 @@ npm run dev
 
 **Local Development:** http://localhost:3000
 
+## 6.1 Environment setup (dev / staging / production)
+
+### Files
+
+- **Tracked**: `.env.example` (safe template, no secrets)
+- **Ignored**: `.env*` via `.gitignore` (so `.env.development`, `.env.staging`, `.env.production`, etc. are not committed)
+
+### How to use
+
+1. Copy the template:
+
+```bash
+cp .env.example .env.development
+```
+
+2. Edit values in `.env.development` for your environment.
+
+### Variables used in code
+
+- **`NEXT_PUBLIC_API_URL`**: read in `src/lib/constants.ts` as the API base URL (falls back to `https://api.floodsense.example.com`).
+
+### Staging and production
+
+- Create `.env.staging` for staging values (kept local / in deployment provider secrets).
+- Create `.env.production` for production values (kept local / in deployment provider secrets).
+
+Important: Next.js automatically loads `.env.development` and `.env.production` based on `NODE_ENV`. “Staging” is typically handled by your hosting platform (Vercel/GitHub Actions/etc.) by injecting environment variables for that environment.
+
 **Build for Production:**
 ```bash
 npm run build
