@@ -240,3 +240,68 @@ This minimizes server cost while preserving freshness where needed
 
 ## 13. Screenshot
 ![alt text](image.png)
+
+
+🔐 Environment Variables
+
+FloodSense uses environment variables to securely manage secrets such as database credentials, API keys, and authentication secrets.
+
+Environment Files
+File	Purpose
+.env.local	Stores real secrets (never committed)
+.env.example	Template for developers
+Server-Side Variables
+
+These are NOT exposed to the browser:
+
+DATABASE_URL
+
+REDIS_URL
+
+AUTH_SECRET
+
+OPENWEATHER_API_KEY
+
+Used only inside:
+
+✔ API routes
+✔ server components
+✔ backend utilities
+
+Client-Safe Variables
+
+Must start with:
+
+NEXT_PUBLIC_
+
+
+Example:
+
+NEXT_PUBLIC_API_BASE_URL
+
+NEXT_PUBLIC_APP_NAME
+
+These are safe because they are bundled into the frontend.
+
+Setup Instructions
+
+1️⃣ Copy template:
+
+cp .env.example .env.local
+
+
+2️⃣ Replace placeholder values.
+
+3️⃣ Restart dev server:
+
+npm run dev
+
+Security Pitfalls Avoided
+
+✔ Secrets never committed
+✔ Server-only variables not used in client components
+✔ Proper NEXT_PUBLIC prefix usage
+✔ Centralized environment access
+✔ Runtime-safe configuration
+
+This ensures FloodSense remains secure, portable, and production-ready.
