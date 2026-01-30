@@ -6,6 +6,7 @@ It leverages open meteorological data to provide dashboards and timely alerts to
 
 This repository demonstrates three core rendering strategies in Next.js App Router:
 
+
 SSG – Static Site Generation
 
 SSR – Server-Side Rendering
