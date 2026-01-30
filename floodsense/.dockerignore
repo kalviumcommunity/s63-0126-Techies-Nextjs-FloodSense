@@ -1,0 +1,44 @@
+# Dependencies (reinstalled in container)
+node_modules
+npm-debug.log*
+.pnpm-debug.log*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Build output (rebuilt in container)
+.next
+out
+build
+
+# Git and env (never copy secrets)
+.git
+.gitignore
+.env*
+!.env.example
+
+# IDE and OS
+.DS_Store
+*.pem
+.idea
+.vscode
+*.swp
+*.swo
+
+# Docs and misc (not needed to run the app)
+README.md
+*.md
+!package.json
+!package-lock.json
+
+# Tests and coverage
+coverage
+.nyc_output
+*.test.*
+*.spec.*
+
+# Docker (avoid recursive copy)
+Dockerfile
+.dockerignore
