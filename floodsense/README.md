@@ -1,210 +1,241 @@
 # FloodSense — Next.js Rendering Modes Implementation
+1. Project Overview
 
-## 1. Project Overview
+FloodSense is a real-time flood risk visualization and alerting platform for flood-prone districts.
+It leverages open meteorological data to provide dashboards and timely alerts to residents.
 
-FloodSense is a real-time flood risk visualization & alerting platform for flood-prone districts. It leverages open meteorological data for dashboards & resident alerts.
+This repository demonstrates three core rendering strategies in Next.js App Router:
 
-This repository demonstrates **three Next.js App Router rendering strategies**: SSG (Static Site Generation), SSR (Server-Side Rendering), and ISR (Incremental Static Regeneration).
+SSG – Static Site Generation
 
-## 2. Rendering Modes Implementation
+SSR – Server-Side Rendering
 
-### SSG (Static Site Generation)
-**Location:** `/districts` page  
-**File:** `src/app/districts/page.tsx`
+ISR – Incremental Static Regeneration
 
-- **How it works:** Pages are pre-rendered at build time into static HTML files
-- **When to use:** Content that doesn't change frequently (district information, blog posts, documentation)
-- **Performance:** Fastest - served from CDN as static files
-- **Implementation:** No special configuration needed - Next.js automatically uses SSG when no dynamic functions are used
+The goal is to understand when and why to use each rendering mode in real-world applications.
 
-**Key Characteristics:**
-- Data fetched during `npm run build`
-- HTML files generated and cached
-- No server computation needed at request time
-- Perfect for SEO and performance
+2. Rendering Modes Used (High-Level Summary)
+Page	Rendering Mode	Purpose
+/districts	SSG	Static district information
+/alerts	SSR	Real-time flood alerts
+/weather	ISR	Weather data with periodic updates
 
-### SSR (Server-Side Rendering)
-**Location:** `/alerts` page  
-**File:** `src/app/alerts/page.tsx`
+3. Rendering Modes Implementation (Detailed)
+3.1 SSG — Static Site Generation
 
-- **How it works:** Pages are rendered on the server for each request
-- **When to use:** Real-time data, personalized content, frequently changing information
-- **Performance:** Slower than SSG (requires server computation)
-- **Implementation:** Uses `export const dynamic = 'force-dynamic'` to disable static generation
+Route: /districts
+File: src/app/districts/page.tsx
 
-**Key Characteristics:**
-- Data fetched on every request
-- Fresh content always served
-- No caching (unless explicitly configured)
-- Uses `force-dynamic` export to ensure server-side rendering
+How it works
 
-### ISR (Incremental Static Regeneration)
-**Location:** `/weather` page  
-**File:** `src/app/weather/page.tsx`
+Pages are generated once at build time
 
-- **How it works:** Pages are statically generated but regenerated periodically in the background
-- **When to use:** Content that changes but doesn't need to be real-time (weather data, stock prices, analytics)
-- **Performance:** Fast (static) with periodic updates
-- **Implementation:** Uses `export const revalidate = 60` to regenerate every 60 seconds
+Output is static HTML served from CDN
 
-**Key Characteristics:**
-- Initial page generated at build time
-- Regenerated in background at specified interval
-- Users see cached version while regeneration happens
-- Best balance of performance and freshness
+When to use
 
-## 3. Folder Structure
-```
-src/
-├── app/          # Routes & Next.js App Router
-│   ├── page.tsx           # Home page
-│   ├── districts/         # SSG page
-│   ├── alerts/            # SSR page
-│   └── weather/           # ISR page
-├── components/   # Reusable UI components
-│   ├── button.tsx
-│   ├── card.tsx
-│   └── navbar.tsx
-├── lib/          # Utilities, helpers, config
-│   ├── types.ts           # TypeScript interfaces
-│   ├── constants.ts       # Application constants
-│   └── fetcher.ts         # Data fetching functions
-└── hooks/        # Custom hooks (future)
-```
+Content that changes rarely (district info, docs, blogs)
 
-## 4. Folder Purpose & Conventions
+Performance
 
-| Folder | Purpose |
-|--------|---------|
-| `app/` | Responsible for routing, server components, and pages. Each subdirectory represents a route. |
-| `components/` | Shared UI pieces used across pages (Button, Card, Navbar) |
-| `lib/` | API helpers, constants, fetchers, configs, and TypeScript types |
-| `hooks/` | Reusable hooks for data-fetching & logic (future) |
+Fastest possible (no server work on request)
 
-## 5. Technical Implementation Details
+Implementation
 
-### SSG Implementation (`/districts`)
-```typescript
-// No special exports needed - Next.js detects static generation
+// No special exports required
 export default async function DistrictsPage() {
-  const districts = await fetchDistricts(); // Fetched at build time
-  // ... render districts
+  const districts = await fetchDistricts();
 }
-```
 
-### SSR Implementation (`/alerts`)
-```typescript
-export const dynamic = 'force-dynamic'; // Forces server-side rendering
+
+Key Characteristics
+
+Data fetched during npm run build
+
+No runtime server cost
+
+Excellent SEO and performance
+
+3.2 SSR — Server-Side Rendering
+
+Route: /alerts
+File: src/app/alerts/page.tsx
+
+How it works
+
+Page is rendered on every request
+
+Always serves fresh data
+
+When to use
+
+Live data, alerts, dashboards, personalized views
+
+Performance
+
+Slower than SSG (server computation required)
+
+Implementation
+
+export const dynamic = 'force-dynamic';
 
 export default async function AlertsPage() {
-  const alerts = await fetchFloodAlerts(); // Fetched on every request
-  // ... render alerts
+  const alerts = await fetchFloodAlerts();
 }
-```
 
-### ISR Implementation (`/weather`)
-```typescript
-export const revalidate = 60; // Regenerate every 60 seconds
+
+Key Characteristics
+
+No caching
+
+Fresh data on every request
+
+Higher server cost
+
+3.3 ISR — Incremental Static Regeneration
+
+Route: /weather
+File: src/app/weather/page.tsx
+
+How it works
+
+Page is static but re-generated periodically
+
+Users see cached page while regeneration happens
+
+When to use
+
+Semi-dynamic content (weather, analytics, product listings)
+
+Performance
+
+Near-static speed with periodic freshness
+
+Implementation
+
+export const revalidate = 60;
 
 export default async function WeatherPage() {
-  const weather = await fetchWeatherData(); // Cached, regenerated periodically
-  // ... render weather
+  const weather = await fetchWeatherData();
 }
-```
 
-## 6. Setup Instructions
 
-```bash
-git clone <repo-url>
-cd floodsense
-npm install
-npm run dev
-```
+Key Characteristics
 
-**Local Development:** http://localhost:3000
+Best balance of performance and freshness
 
-## 6.1 Environment setup (dev / staging / production)
+Scales better than SSR
 
-### Files
+4. Project Folder Structure
+src/
+├── app/
+│   ├── page.tsx        # Home
+│   ├── districts/      # SSG
+│   ├── alerts/         # SSR
+│   └── weather/        # ISR
+├── components/
+├── lib/
+└── hooks/
 
-- **Tracked**: `.env.example` (safe template, no secrets)
-- **Ignored**: `.env*` via `.gitignore` (so `.env.development`, `.env.staging`, `.env.production`, etc. are not committed)
+5. Folder Purpose & Conventions
+Folder	Purpose
+app/	Routing and server components
+components/	Reusable UI elements
+lib/	Utilities, constants, fetch logic
+hooks/	Custom hooks (future use)
 
-### How to use
+6. Fetch Caching Behavior
+SSG
 
-1. Copy the template:
+fetch() cached at build time
 
-```bash
+No re-fetching at runtime
+
+SSR
+
+force-dynamic disables caching
+
+fetch() behaves as no-store
+
+ISR
+
+revalidate controls regeneration interval
+
+Background regeneration keeps content fresh
+
+7. Environment Setup (dev / staging / production)
+Files
+
+✅ Tracked: .env.example
+
+❌ Ignored: .env* via .gitignore
+
+Usage
 cp .env.example .env.development
-```
 
-2. Edit values in `.env.development` for your environment.
+Variables
 
-### Variables used in code
+NEXT_PUBLIC_API_URL
+Used in src/lib/constants.ts (fallback included)
 
-- **`NEXT_PUBLIC_API_URL`**: read in `src/lib/constants.ts` as the API base URL (falls back to `https://api.floodsense.example.com`).
+Staging & Production
 
-### Staging and production
+Values are injected via hosting platforms (Vercel / GitHub Actions)
 
-- Create `.env.staging` for staging values (kept local / in deployment provider secrets).
-- Create `.env.production` for production values (kept local / in deployment provider secrets).
+.env.staging and .env.production are never committed
 
-Important: Next.js automatically loads `.env.development` and `.env.production` based on `NODE_ENV`. “Staging” is typically handled by your hosting platform (Vercel/GitHub Actions/etc.) by injecting environment variables for that environment.
+8. Docker (Optional)
 
-**Build for Production:**
-```bash
-npm run build
-npm start
-```
+Docker support is included to demonstrate containerization for CI/CD and cloud deployments.
 
-## 7. Pages Overview
+Build & Run
+docker build -t floodsense .
+docker run -p 3000:3000 floodsense
 
-- **`/`** - Home page showcasing all rendering modes
-- **`/districts`** - SSG example (static district information)
-- **`/alerts`** - SSR example (real-time flood alerts)
-- **`/weather`** - ISR example (weather data with periodic updates)
+Why Docker Matters
 
-## 8. Fetch Caching Strategies
+Docker – Same app runs everywhere
 
-### Static Generation (SSG)
-- Default behavior in Next.js App Router
-- `fetch()` calls are cached indefinitely
-- Use `cache: 'no-store'` to disable caching if needed
+CI/CD – Automated builds in pipelines
 
-### Server-Side Rendering (SSR)
-- `force-dynamic` disables all caching
-- All `fetch()` calls use `cache: 'no-store'` automatically
-- Fresh data on every request
+Cloud – Containers run directly on AWS/Azure
 
-### Incremental Static Regeneration (ISR)
-- `revalidate` option sets regeneration interval
-- `fetch()` calls can use `next: { revalidate: 60 }` for per-request revalidation
-- Background regeneration keeps content fresh
+Multi-stage Dockerfile and .dockerignore ensure:
 
-## 9. Best Practices Demonstrated
+Smaller images
 
-✅ **SSG for static content** - District information that rarely changes  
-✅ **SSR for real-time data** - Flood alerts that need to be current  
-✅ **ISR for semi-dynamic content** - Weather data that updates periodically  
-✅ **Proper TypeScript types** - Type-safe data structures  
-✅ **Reusable components** - DRY principle with shared UI components  
-✅ **Clear code comments** - Explains rendering mode choices  
+No secrets inside containers
 
-## 10. Scalability Reflection
+No app logic changes
 
-We chose this structure because:
+9. Pages Overview
 
-✔ Separation of UI + logic + routing  
-✔ Scales well for full-stack Next.js projects  
-✔ App Router aligns with future backend needs (API routes, server components)  
-✔ Components stay reusable & testable  
-✔ Clear for multi-member teamwork  
+/ — Home (overview)
 
-This helps our team ship new features faster & avoid code clutter as the project grows.
+/districts — SSG example
 
-## 11. Team Reflection
+/alerts — SSR example
 
-"If FloodSense were a real-world product, this folder structure and rendering strategy selection would allow us to optimize performance based on content type. Static district pages load instantly, real-time alerts are always fresh, and weather data balances speed with freshness. This creates an optimal user experience while maintaining scalability and developer productivity."
+/weather — ISR example
 
-## 12. Screenshot
+10. Best Practices Demonstrated
+
+✅ Correct rendering mode selection
+✅ Performance-first architecture
+✅ Secure environment handling
+✅ Modular folder structure
+✅ Scalable App Router design
+
+11. Scalability Reflection
+
+If user traffic increased 10×:
+Static and ISR pages would scale effortlessly
+SSR would be limited to real-time alert data only
+This minimizes server cost while preserving freshness where needed
+
+12. Team Reflection
+
+“FloodSense demonstrates how choosing the right rendering strategy improves performance, scalability, and developer productivity. Static pages load instantly, real-time alerts stay fresh, and weather data balances speed with accuracy.”
+
+## 13. Screenshot
 ![alt text](image.png)
