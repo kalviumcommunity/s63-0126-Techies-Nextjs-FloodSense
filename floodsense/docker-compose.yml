@@ -1,0 +1,43 @@
+services:
+  app:
+    image: node:20-alpine
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      # Service-to-service URLs (use container hostnames, not localhost)
+      DATABASE_URL: "postgresql://floodsense:floodsense@postgres:5432/floodsense"
+      REDIS_URL: "redis://redis:6379"
+      # Optional: keep the sample README/API base URL working in-container
+      NEXT_PUBLIC_API_BASE_URL: "http://localhost:3000/api"
+    volumes:
+      - ./:/app
+      # Prevent bind-mount from overwriting container's node_modules
+      - app_node_modules:/app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    command: sh -c "npm install && npm run dev -- -H 0.0.0.0 -p 3000"
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: floodsense
+      POSTGRES_USER: floodsense
+      POSTGRES_PASSWORD: floodsense
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+volumes:
+  pgdata:
+  redisdata:
+  app_node_modules:

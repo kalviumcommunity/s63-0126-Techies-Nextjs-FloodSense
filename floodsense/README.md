@@ -193,6 +193,37 @@ Build & Run
 docker build -t floodsense .
 docker run -p 3000:3000 floodsense
 
+8.1 Docker Compose (Local Development)
+
+For local development with **PostgreSQL** and **Redis** running automatically, use Docker Compose.
+
+What you get
+- **App**: Next.js dev server at `http://localhost:3000`
+- **PostgreSQL**: Database at `localhost:5432`
+- **Redis**: Cache at `localhost:6379`
+
+Start (first time or after changes)
+
+```bash
+docker compose up --build
+```
+
+Stop
+
+```bash
+docker compose down
+```
+
+Reset database/cache (deletes volumes)
+
+```bash
+docker compose down -v
+```
+
+Default connection strings (already set inside `docker-compose.yml`)
+- **Postgres**: `postgresql://floodsense:floodsense@postgres:5432/floodsense`
+- **Redis**: `redis://redis:6379`
+
 Why Docker Matters
 
 Docker – Same app runs everywhere
