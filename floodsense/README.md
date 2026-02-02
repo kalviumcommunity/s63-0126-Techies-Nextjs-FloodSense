@@ -269,6 +269,53 @@ This minimizes server cost while preserving freshness where needed
 
 “FloodSense demonstrates how choosing the right rendering strategy improves performance, scalability, and developer productivity. Static pages load instantly, real-time alerts stay fresh, and weather data balances speed with accuracy.”
 
+---
+
+## 13. PostgreSQL Schema (Beginner-Level, Normalized)
+
+This project can use PostgreSQL to store **users**, **districts**, and **flood alerts** in a normalized relational structure.
+
+- **Schema file**: `schema.sql`
+- **Core entities**: `app_user`, `district`, `alert`
+- **Relationship table**: `user_district_subscription` (many-to-many)
+
+### Tables and relationships
+
+- **`app_user` (User)**
+  - One row per user.
+  - Key fields: `user_id` (PK), `email` (UNIQUE), `created_at`.
+
+- **`district` (District)**
+  - One row per district/location.
+  - Key fields: `district_id` (PK), `name`, `country`.
+  - Constraint example: district name is unique within a country (`UNIQUE (name, country)`).
+
+- **`user_district_subscription` (User ↔ District)**
+  - Implements **many-to-many**: a user can follow many districts, and a district can be followed by many users.
+  - Composite primary key: `(user_id, district_id)`
+  - Foreign keys:
+    - `user_id` → `app_user(user_id)` (ON DELETE CASCADE)
+    - `district_id` → `district(district_id)` (ON DELETE CASCADE)
+
+- **`alert` (Alert)**
+  - One row per alert issued for a district.
+  - Foreign keys:
+    - `district_id` → `district(district_id)` (alerts belong to a district)
+    - `created_by` → `app_user(user_id)` (optional: who posted it)
+  - Basic constraints:
+    - `severity` and `status` are enums (controlled set of values)
+    - `expires_at` must be after `issued_at` (if provided)
+
+### Normalization notes (1NF / 2NF / 3NF)
+
+- **1NF (atomic values)**: Fields like `title`, `message`, `email` store single values (no lists inside columns).
+- **2NF (no partial dependency)**: The subscription table uses a composite key `(user_id, district_id)` and only stores subscription-specific attributes like `subscribed_at`.
+- **3NF (no transitive dependency)**:
+  - District data (name, coordinates) is stored only in `district`, not repeated on every alert.
+  - User data (email, name) is stored only in `app_user`, not repeated on alerts/subscriptions.
+
+This keeps the database consistent and avoids update anomalies (e.g., editing a district name in one place updates it everywhere).
+
 ## 13. Screenshot
 ![alt text](image.png)
 
