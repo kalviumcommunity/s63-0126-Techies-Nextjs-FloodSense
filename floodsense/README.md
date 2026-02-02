@@ -241,6 +241,55 @@ This minimizes server cost while preserving freshness where needed
 ## 13. Screenshot
 ![alt text](image.png)
 
+## 14. Team Git Workflow
+
+This section describes how the team uses Git and GitHub for collaboration. It is aimed at beginner-level teams (e.g. college projects).
+
+### Branch naming conventions
+
+All work is done on branches. Branch names must start with one of these prefixes:
+
+| Prefix   | Use for |
+|----------|--------|
+| `feature/` | New features or enhancements (e.g. `feature/weather-widget`) |
+| `fix/`     | Bug fixes (e.g. `fix/alert-refresh`) |
+| `docs/`    | Documentation only (e.g. `docs/readme-setup`) |
+| `chore/`   | Tooling, config, or maintenance — no app code change (e.g. `chore/update-deps`) |
+
+**Examples:** `feature/add-export`, `fix/navbar-mobile`, `docs/api-usage`, `chore/eslint-config`.
+
+### Branching strategy
+
+- **`main`** — Stable, working code. Only updated via merged pull requests.
+- **Short-lived branches** — Create one branch per task (feature, fix, docs, or chore). When the task is done, open a PR into `main` and delete the branch after merge.
+
+**Workflow in short:** Create branch from `main` → Make changes → Push → Open PR → Get review → Merge → Delete branch.
+
+### Pull request (PR) process
+
+1. **Create a branch** from the latest `main`:
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/your-feature-name
+   ```
+2. **Make your changes** and commit with clear messages.
+3. **Push the branch** and open a **Pull Request** on GitHub into `main`.
+4. **Fill out the PR template** (description, branch type, how to test). The template appears automatically when you open a PR.
+5. **Request a review** from a teammate. They use the **code review checklist** in the PR to approve or request changes.
+6. **Address feedback** if any, then merge once approved. Delete the branch after merging.
+
+PR template and code review checklist live in [`.github/pull_request_template.md`](.github/pull_request_template.md).
+
+### Benefits of this workflow
+
+- **Clear history** — Branch names show what each change is for (feature, fix, docs, chore).
+- **Safe `main`** — Nothing lands on `main` without a PR and review.
+- **Learning** — Everyone practices branching, PRs, and code review.
+- **Fewer conflicts** — Small, focused branches reduce merge conflicts.
+- **Accountability** — Every change is linked to a PR and can be discussed.
+
+---
 
 🔐 Environment Variables
 
