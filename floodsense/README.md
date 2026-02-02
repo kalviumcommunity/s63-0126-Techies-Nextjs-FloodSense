@@ -432,3 +432,27 @@ Security Pitfalls Avoided
 ✔ Runtime-safe configuration
 
 This ensures FloodSense remains secure, portable, and production-ready.
+
+## 🗄️ PostgreSQL Schema Design
+
+FloodSense uses a normalized PostgreSQL schema designed with Prisma ORM.
+
+### Core Entities
+- User
+- District
+- WeatherData
+- AlertPreference
+
+### Relationships
+- User ↔ AlertPreference (1:1)
+- District ↔ WeatherData (1:N)
+
+### Normalization
+- Follows 1NF, 2NF, and 3NF
+- No redundant or derived fields
+- Clear separation of concerns
+
+### Scalability
+- Indexed foreign keys
+- Time-based weather queries
+- Cascading deletes prevent orphan data
