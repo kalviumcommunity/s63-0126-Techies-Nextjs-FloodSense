@@ -432,3 +432,15 @@ Security Pitfalls Avoided
 ✔ Runtime-safe configuration
 
 This ensures FloodSense remains secure, portable, and production-ready.
+
+
+## Prisma ORM Setup
+
+Prisma ORM is used to manage database models and queries in a type-safe way.
+
+The Prisma setup includes:
+- A `schema.prisma` file defining database models
+- Auto-generated Prisma Client for querying the database
+- A shared Prisma client instance to avoid multiple connections in development
+
+Prisma improves developer productivity by providing type safety, auto-completion, and reliable database access across the application.
