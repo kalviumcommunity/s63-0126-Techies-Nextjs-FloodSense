@@ -470,3 +470,12 @@ FloodSense uses a normalized PostgreSQL schema designed with Prisma ORM.
 - Time-based weather queries
 - Cascading deletes prevent orphan data
 
+## Transactions & Query Optimisation
+
+The project demonstrates basic transaction handling and query optimisation using Prisma ORM.
+
+- **Transactions** are used to ensure multiple database operations execute atomically. If any step fails, Prisma automatically rolls back all changes to maintain data consistency.
+- **Query optimisation** is achieved by selecting only required fields, limiting result size, and ordering results efficiently.
+- **Indexes** are added on frequently queried fields to improve performance as the dataset grows.
+
+These practices help keep the application safe, fast, and scalable.
