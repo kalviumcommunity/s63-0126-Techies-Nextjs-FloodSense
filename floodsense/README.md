@@ -271,7 +271,30 @@ This minimizes server cost while preserving freshness where needed
 
 ---
 
-## 13. PostgreSQL Schema (Beginner-Level, Normalized)
+## 13. RESTful API Route Structure (Next.js App Router)
+
+FloodSense exposes a small REST-style API using the **Next.js App Router** under the `src/app/api` folder.
+
+### Route naming conventions
+
+- Plural, lowercase nouns for resources
+- All routes live under `src/app/api/<resource>/route.ts`
+- Each `route.ts` file exports HTTP method handlers such as `GET` and `POST`
+
+### Available API routes
+
+- `GET /api/users` — Returns a placeholder list of users
+- `POST /api/users` — Accepts JSON and echoes it back (stub, no database)
+- `GET /api/districts` — Returns a placeholder list of districts
+- `POST /api/districts` — Accepts JSON and echoes it back (stub, no database)
+- `GET /api/alerts` — Returns a placeholder list of alerts
+- `POST /api/alerts` — Accepts JSON and echoes it back (stub, no database)
+
+These handlers are intentionally database-agnostic. They demonstrate how to structure RESTful APIs with the App Router; actual persistence can be added later using Prisma or another data layer.
+
+---
+
+## 14. PostgreSQL Schema (Beginner-Level, Normalized)
 
 This project can use PostgreSQL to store **users**, **districts**, and **flood alerts** in a normalized relational structure.
 
@@ -316,10 +339,10 @@ This project can use PostgreSQL to store **users**, **districts**, and **flood a
 
 This keeps the database consistent and avoids update anomalies (e.g., editing a district name in one place updates it everywhere).
 
-## 13. Screenshot
+## 15. Screenshot
 ![alt text](image.png)
 
-## 14. Team Git Workflow
+## 16. Team Git Workflow
 
 This section describes how the team uses Git and GitHub for collaboration. It is aimed at beginner-level teams (e.g. college projects).
 
