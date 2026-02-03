@@ -36,6 +36,10 @@ model Alert {
   districtId Int
   district   District @relation(fields: [districtId], references: [id])
 
+  @@index([districtId])
+  @@index([createdAt])
+}
+
 
 enum RiskLevel {
   LOW
