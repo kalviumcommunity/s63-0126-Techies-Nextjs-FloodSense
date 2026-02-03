@@ -1,11 +1,40 @@
+
 generator client {
   provider = "prisma-client-js"
 }
+
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+}
+
+model District {
+  id     Int     @id @default(autoincrement())
+  name   String
+  state  String
+  alerts Alert[]
+}
+
+model Alert {
+  id         Int      @id @default(autoincrement())
+  message    String
+  severity   String
+  createdAt  DateTime @default(now())
+
+  districtId Int
+  district   District @relation(fields: [districtId], references: [id])
 
 
 enum RiskLevel {
@@ -63,4 +92,5 @@ model AlertPreference {
   createdAt         DateTime   @default(now())
 
   user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }
