@@ -502,3 +502,46 @@ The project demonstrates basic transaction handling and query optimisation using
 - **Indexes** are added on frequently queried fields to improve performance as the dataset grows.
 
 These practices help keep the application safe, fast, and scalable.
+
+🔄 Database Migrations & Seeding
+
+FloodSense uses Prisma ORM for reproducible database management.
+
+Migration Workflow
+
+Create migration:
+
+npx prisma migrate dev --name init_schema
+
+
+Reset database:
+
+npx prisma migrate reset
+
+Seed Script
+
+Run:
+
+node prisma/seed.js
+
+Features
+
+Versioned SQL migrations
+
+Idempotent seed logic
+
+Safe resets for development
+
+Consistent environment setup
+
+Reflection
+
+Before applying migrations in production, we would:
+
+Backup database
+
+Test in staging
+
+Monitor logs
+
+Deploy during low traffic

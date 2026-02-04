@@ -1,45 +1,11 @@
-
 generator client {
   provider = "prisma-client-js"
 }
-
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
-}
-
-model District {
-  id     Int     @id @default(autoincrement())
-  name   String
-  state  String
-  alerts Alert[]
-}
-
-model Alert {
-  id         Int      @id @default(autoincrement())
-  message    String
-  severity   String
-  createdAt  DateTime @default(now())
-
-  districtId Int
-  district   District @relation(fields: [districtId], references: [id])
-
-  @@index([districtId])
-  @@index([createdAt])
-}
-
 
 enum RiskLevel {
   LOW
@@ -49,11 +15,11 @@ enum RiskLevel {
 }
 
 model User {
-  id          String           @id @default(uuid())
-  name        String
-  email       String           @unique
-  password    String
-  createdAt  DateTime         @default(now())
+  id         String  @id @default(uuid())
+  name       String
+  email      String  @unique
+  password   String
+  createdAt  DateTime @default(now())
 
   preferences AlertPreference?
 
@@ -61,12 +27,12 @@ model User {
 }
 
 model District {
-  id        String        @id @default(uuid())
+  id        String  @id @default(uuid())
   name      String
   state     String
   latitude  Float
   longitude Float
-  createdAt DateTime      @default(now())
+  createdAt DateTime @default(now())
 
   weather   WeatherData[]
 
@@ -74,27 +40,26 @@ model District {
 }
 
 model WeatherData {
-  id          String     @id @default(uuid())
+  id          String    @id @default(uuid())
   districtId  String
   rainfallMm  Float
   temperature Float
   humidity    Float
   riskLevel   RiskLevel
-  recordedAt  DateTime   @default(now())
+  recordedAt  DateTime @default(now())
 
-  district    District   @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  district District @relation(fields: [districtId], references: [id], onDelete: Cascade)
 
   @@index([districtId])
   @@index([recordedAt])
 }
 
 model AlertPreference {
-  id                String     @id @default(uuid())
-  userId            String     @unique
+  id                String    @id @default(uuid())
+  userId            String    @unique
   rainfallThreshold Float
   riskThreshold     RiskLevel
-  createdAt         DateTime   @default(now())
+  createdAt         DateTime @default(now())
 
-  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
