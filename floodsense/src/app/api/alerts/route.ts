@@ -1,41 +1,20 @@
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-// GET /api/alerts
-// Returns a placeholder list of alerts.
 export async function GET() {
-  // In a real implementation, you would fetch alerts from the database here.
-  const alerts = [
-    {
-      id: 1,
-      districtId: 1,
-      severity: "high",
-      message: "Sample flood alert for demonstration purposes.",
-    },
-  ];
+  const alerts = await prisma.alert.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 
-  return NextResponse.json({ data: alerts });
+  return NextResponse.json(alerts);
 }
 
-// POST /api/alerts
-// Accepts a JSON payload to create a new alert (placeholder only).
-export async function POST(request: Request) {
-  // In a real implementation, you would validate the body
-  // and persist the new alert to the database.
-  const body = await request.json().catch(() => null);
+export async function POST(req: Request) {
+  const body = await req.json();
 
-  if (!body) {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 },
-    );
-  }
+  const alert = await prisma.alert.create({
+    data: body,
+  });
 
-  return NextResponse.json(
-    {
-      message: "Alert creation is not yet implemented. This is a stub endpoint.",
-      received: body,
-    },
-    { status: 201 },
-  );
+  return NextResponse.json(alert, { status: 201 });
 }
-

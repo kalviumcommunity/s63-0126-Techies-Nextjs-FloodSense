@@ -1,36 +1,31 @@
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-// GET /api/users
-// Returns a placeholder list of users.
-export async function GET() {
-  // In a real implementation, you would fetch users from the database here.
-  const users = [
-    { id: 1, name: "Example User", email: "user@example.com" },
-  ];
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
 
-  return NextResponse.json({ data: users });
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+
+  const users = await prisma.user.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return NextResponse.json({ page, limit, data: users });
 }
 
-// POST /api/users
-// Accepts a JSON payload to create a new user (placeholder only).
-export async function POST(request: Request) {
-  // In a real implementation, you would validate the body
-  // and persist the new user to the database.
-  const body = await request.json().catch(() => null);
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
 
-  if (!body) {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 },
-    );
+    const user = await prisma.user.create({
+      data: body,
+    });
+
+    return NextResponse.json(user, { status: 201 });
+  } catch {
+    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
-
-  return NextResponse.json(
-    {
-      message: "User creation is not yet implemented. This is a stub endpoint.",
-      received: body,
-    },
-    { status: 201 },
-  );
 }
-
