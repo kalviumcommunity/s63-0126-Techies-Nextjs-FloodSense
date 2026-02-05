@@ -1,36 +1,25 @@
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-// GET /api/districts
-// Returns a placeholder list of districts.
-export async function GET() {
-  // In a real implementation, you would fetch districts from the database here.
-  const districts = [
-    { id: 1, name: "Sample District", country: "Exampleland" },
-  ];
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
 
-  return NextResponse.json({ data: districts });
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+
+  const districts = await prisma.district.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { name: "asc" },
+  });
+
+  return NextResponse.json({ page, limit, data: districts });
 }
 
-// POST /api/districts
-// Accepts a JSON payload to create a new district (placeholder only).
-export async function POST(request: Request) {
-  // In a real implementation, you would validate the body
-  // and persist the new district to the database.
-  const body = await request.json().catch(() => null);
+export async function POST(req: Request) {
+  const body = await req.json();
 
-  if (!body) {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 },
-    );
-  }
+  const district = await prisma.district.create({ data: body });
 
-  return NextResponse.json(
-    {
-      message: "District creation is not yet implemented. This is a stub endpoint.",
-      received: body,
-    },
-    { status: 201 },
-  );
+  return NextResponse.json(district, { status: 201 });
 }
-

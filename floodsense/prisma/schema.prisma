@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//////////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////////
+
 enum RiskLevel {
   LOW
   MODERATE
@@ -14,39 +18,53 @@ enum RiskLevel {
   SEVERE
 }
 
-model User {
-  id         String  @id @default(uuid())
-  name       String
-  email      String  @unique
-  password   String
-  createdAt  DateTime @default(now())
+//////////////////////////////////////////////////////
+// MODELS
+//////////////////////////////////////////////////////
 
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  // relations
   preferences AlertPreference?
+  alerts      Alert[] // 🔥 alerts user received
 
   @@index([email])
 }
 
+//////////////////////////////////////////////////////
+
 model District {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
   state     String
   latitude  Float
   longitude Float
   createdAt DateTime @default(now())
 
-  weather   WeatherData[]
+  // relations
+  weather WeatherData[]
+  alerts  Alert[] // 🔥 alerts for this district
 
   @@unique([name, state])
 }
 
+//////////////////////////////////////////////////////
+
 model WeatherData {
-  id          String    @id @default(uuid())
-  districtId  String
+  id         String @id @default(uuid())
+  districtId String
+
   rainfallMm  Float
   temperature Float
   humidity    Float
   riskLevel   RiskLevel
-  recordedAt  DateTime @default(now())
+
+  recordedAt DateTime @default(now())
 
   district District @relation(fields: [districtId], references: [id], onDelete: Cascade)
 
@@ -54,12 +72,37 @@ model WeatherData {
   @@index([recordedAt])
 }
 
+//////////////////////////////////////////////////////
+//NEW: ALERT MODEL 
+//////////////////////////////////////////////////////
+
+model Alert {
+  id        String    @id @default(uuid())
+  message   String
+  severity  RiskLevel
+  createdAt DateTime  @default(now())
+
+  // relations
+  districtId String
+  district   District @relation(fields: [districtId], references: [id], onDelete: Cascade)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([districtId])
+  @@index([createdAt])
+}
+
+//////////////////////////////////////////////////////
+
 model AlertPreference {
-  id                String    @id @default(uuid())
-  userId            String    @unique
+  id     String @id @default(uuid())
+  userId String @unique
+
   rainfallThreshold Float
   riskThreshold     RiskLevel
-  createdAt         DateTime @default(now())
+
+  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
