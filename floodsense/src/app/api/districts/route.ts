@@ -1,25 +1,20 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { sendSuccess, sendError } from "@/lib/responseHandler";
+import { ERROR_CODES } from "@/lib/errorCodes";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
+export async function GET() {
+  try {
+    const districts = await prisma.district.findMany({
+      orderBy: { name: "asc" },
+    });
 
-  const page = Number(searchParams.get("page")) || 1;
-  const limit = Number(searchParams.get("limit")) || 10;
-
-  const districts = await prisma.district.findMany({
-    skip: (page - 1) * limit,
-    take: limit,
-    orderBy: { name: "asc" },
-  });
-
-  return NextResponse.json({ page, limit, data: districts });
-}
-
-export async function POST(req: Request) {
-  const body = await req.json();
-
-  const district = await prisma.district.create({ data: body });
-
-  return NextResponse.json(district, { status: 201 });
+    return sendSuccess(districts, "Districts fetched successfully");
+  } catch (err) {
+    return sendError(
+      "Failed to fetch districts",
+      ERROR_CODES.DATABASE_FAILURE,
+      500,
+      err
+    );
+  }
 }

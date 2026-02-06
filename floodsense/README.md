@@ -435,14 +435,14 @@ These are safe because they are bundled into the frontend.
 
 Setup Instructions
 
-1️⃣ Copy template:
+1. Copy template:
 
 cp .env.example .env.local
 
 
-2️⃣ Replace placeholder values.
+2️. Replace placeholder values.
 
-3️⃣ Restart dev server:
+3️. Restart dev server:
 
 npm run dev
 
@@ -469,7 +469,7 @@ The Prisma setup includes:
 
 Prisma improves developer productivity by providing type safety, auto-completion, and reliable database access across the application.
 
-## 🗄️ PostgreSQL Schema Design
+##  PostgreSQL Schema Design
 
 FloodSense uses a normalized PostgreSQL schema designed with Prisma ORM.
 
@@ -503,7 +503,7 @@ The project demonstrates basic transaction handling and query optimisation using
 
 These practices help keep the application safe, fast, and scalable.
 
-🔄 Database Migrations & Seeding
+ Database Migrations & Seeding
 
 FloodSense uses Prisma ORM for reproducible database management.
 
@@ -545,3 +545,32 @@ Test in staging
 Monitor logs
 
 Deploy during low traffic
+
+Global API Response Format
+
+All endpoints return a unified envelope:
+
+Success
+{
+  "success": true,
+  "message": "User created successfully",
+  "data": {},
+  "timestamp": "ISO_DATE"
+}
+
+Error
+{
+  "success": false,
+  "message": "Validation failed",
+  "error": { "code": "E001" }
+}
+
+Benefits
+
+predictable frontend handling
+
+easier debugging
+
+consistent logging
+
+better observability

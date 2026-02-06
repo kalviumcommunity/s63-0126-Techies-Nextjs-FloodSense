@@ -1,40 +1,32 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { sendSuccess, sendError } from "@/lib/responseHandler";
+import { ERROR_CODES } from "@/lib/errorCodes";
 
-export async function GET(
-  _: Request,
-  { params }: { params: { id: string } }
-) {
-  const user = await prisma.user.findUnique({
-    where: { id: params.id },
-    include: { preferences: true, alerts: true },
-  });
+export async function GET(_: Request, { params }: any) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: params.id },
+    });
 
-  if (!user)
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!user)
+      return sendError(
+        "User not found",
+        ERROR_CODES.NOT_FOUND,
+        404
+      );
 
-  return NextResponse.json(user);
+    return sendSuccess(user, "User fetched successfully");
+  } catch (err) {
+    return sendError("Failed", ERROR_CODES.INTERNAL_ERROR, 500, err);
+  }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const body = await req.json();
+export async function DELETE(_: Request, { params }: any) {
+  try {
+    await prisma.user.delete({ where: { id: params.id } });
 
-  const updated = await prisma.user.update({
-    where: { id: params.id },
-    data: body,
-  });
-
-  return NextResponse.json(updated);
-}
-
-export async function DELETE(
-  _: Request,
-  { params }: { params: { id: string } }
-) {
-  await prisma.user.delete({ where: { id: params.id } });
-
-  return NextResponse.json({ message: "Deleted" });
+    return sendSuccess(null, "User deleted successfully");
+  } catch (err) {
+    return sendError("Delete failed", ERROR_CODES.INTERNAL_ERROR, 500, err);
+  }
 }
