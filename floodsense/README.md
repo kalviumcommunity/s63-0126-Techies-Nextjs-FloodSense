@@ -288,7 +288,50 @@ FloodSense exposes a small REST-style API using the **Next.js App Router** under
 - `GET /api/districts` — Returns a placeholder list of districts
 - `POST /api/districts` — Accepts JSON and echoes it back (stub, no database)
 - `GET /api/alerts` — Returns a placeholder list of alerts
-- `POST /api/alerts` — Accepts JSON and echoes it back (stub, no database)
+- `POST /api/alerts` — Validates JSON with **Zod** and echoes back the validated payload (stub, no database)
+
+### `POST /api/alerts` request & validation
+
+Payload is validated using a simple Zod schema:
+
+- **title**: required `string`
+- **message**: required `string`
+- **severity**: optional enum `"low" | "medium" | "high"`
+- **districtId**: optional `string`
+- **issuedAt**: optional ISO `string` datetime
+- **expiresAt**: optional ISO `string` datetime
+
+On success, the route returns the global envelope shape, for example:
+
+```json
+{
+  "success": true,
+  "message": "Alert payload accepted (stub, not persisted)",
+  "data": {
+    "title": "River level rising",
+    "message": "Stay away from low-lying areas.",
+    "severity": "high"
+  },
+  "timestamp": "2025-01-01T12:00:00.000Z"
+}
+```
+
+On validation error, it responds with HTTP 400 and a structured error:
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "issues": {
+      "fieldErrors": {
+        "title": ["Title is required"]
+      }
+    }
+  }
+}
+```
 
 These handlers are intentionally database-agnostic. They demonstrate how to structure RESTful APIs with the App Router; actual persistence can be added later using Prisma or another data layer.
 
