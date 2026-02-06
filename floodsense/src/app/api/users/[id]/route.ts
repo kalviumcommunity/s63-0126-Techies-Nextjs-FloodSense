@@ -21,6 +21,7 @@ export async function GET(_: Request, { params }: any) {
   }
 }
 
+
 export async function DELETE(_: Request, { params }: any) {
   try {
     await prisma.user.delete({ where: { id: params.id } });

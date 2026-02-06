@@ -40,6 +40,7 @@ export async function POST(req: Request) {
         400
       );
 
+      
     const user = await prisma.user.create({ data: body });
 
     return sendSuccess(user, "User created successfully", 201);
