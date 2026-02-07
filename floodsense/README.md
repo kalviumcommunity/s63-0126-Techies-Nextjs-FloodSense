@@ -337,6 +337,39 @@ These handlers are intentionally database-agnostic. They demonstrate how to stru
 
 ---
 
+## 13.1 Authentication APIs (Beginner-Friendly)
+
+FloodSense includes simple authentication endpoints for signup, login, and token verification.
+
+### Endpoints
+- `POST /api/auth/signup` — Create a new user (hashes password with bcrypt)
+- `POST /api/auth/login` — Validate credentials and return a JWT
+- `GET /api/auth/protected` — Verify JWT (requires `Authorization: Bearer <token>`)
+
+### Sample requests
+
+Signup:
+```bash
+curl -X POST http://localhost:3000/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Avery Rivers","email":"avery@example.com","password":"secret123"}'
+```
+
+Login:
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"avery@example.com","password":"secret123"}'
+```
+
+Protected:
+```bash
+curl http://localhost:3000/api/auth/protected \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+```
+
+---
+
 ## 14. PostgreSQL Schema (Beginner-Level, Normalized)
 
 This project can use PostgreSQL to store **users**, **districts**, and **flood alerts** in a normalized relational structure.
@@ -452,6 +485,8 @@ DATABASE_URL
 REDIS_URL
 
 AUTH_SECRET
+
+JWT_SECRET
 
 OPENWEATHER_API_KEY
 
