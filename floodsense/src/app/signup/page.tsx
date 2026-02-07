@@ -1,0 +1,95 @@
+import Link from 'next/link';
+import { Badge } from '@/components/badge';
+import { Button } from '@/components/button';
+import { Card } from '@/components/card';
+import { Container } from '@/components/container';
+
+export default function SignupPage() {
+  return (
+    <div className="bg-background">
+      <Container className="py-12 lg:py-20">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <Card
+            title="Create your account"
+            description="Start coordinating responses in minutes."
+            className="motion-safe:animate-fade-in"
+          >
+            <form className="space-y-4 text-sm text-muted-foreground">
+              <label className="grid gap-2">
+                <span className="font-medium text-foreground">Full name</span>
+                <input
+                  type="text"
+                  placeholder="Avery Morgan"
+                  className="h-11 rounded-2xl border border-border bg-background px-4 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </label>
+              <label className="grid gap-2">
+                <span className="font-medium text-foreground">Work email</span>
+                <input
+                  type="email"
+                  placeholder="avery@response.gov"
+                  className="h-11 rounded-2xl border border-border bg-background px-4 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </label>
+              <label className="grid gap-2">
+                <span className="font-medium text-foreground">Organization</span>
+                <input
+                  type="text"
+                  placeholder="City Response Unit"
+                  className="h-11 rounded-2xl border border-border bg-background px-4 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </label>
+              <label className="grid gap-2">
+                <span className="font-medium text-foreground">Password</span>
+                <input
+                  type="password"
+                  placeholder="Create a secure password"
+                  className="h-11 rounded-2xl border border-border bg-background px-4 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </label>
+              <label className="flex items-start gap-2 text-xs">
+                <input type="checkbox" className="mt-1 h-4 w-4 accent-primary" />
+                <span>
+                  I agree to the FloodSense terms and privacy policy.
+                </span>
+              </label>
+              <Button className="w-full" size="lg">
+                Create account
+              </Button>
+              <p className="text-center text-xs text-muted-foreground">
+                Already have an account?{' '}
+                <Link className="font-semibold text-foreground" href="/login">
+                  Log in
+                </Link>
+              </p>
+            </form>
+          </Card>
+          <div className="space-y-4 motion-safe:animate-fade-up">
+            <Badge variant="success">Join the network</Badge>
+            <h1 className="text-3xl font-semibold text-foreground">
+              Equip your team with real-time flood intelligence.
+            </h1>
+            <p className="text-muted-foreground">
+              Set response roles, configure alerts, and collaborate across
+              agencies with shared dashboards and live updates.
+            </p>
+            <div className="grid gap-3 text-sm text-muted-foreground">
+              {[
+                'Role-based access for incident teams',
+                'Faster response times with clear escalation',
+                'Audit-ready reporting and timeline exports',
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-border bg-muted/40 px-4 py-3"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Container>
+    </div>
+  );
+}
