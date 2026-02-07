@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Badge } from '@/components/badge';
 import { Card } from '@/components/card';
 import { Container } from '@/components/container';
@@ -20,6 +21,11 @@ const values = [
   },
 ];
 
+const imagery = {
+  about:
+    'https://images.pexels.com/photos/31550735/pexels-photo-31550735.jpeg?auto=compress&cs=tinysrgb&w=2000',
+};
+
 export default function AboutPage() {
   return (
     <div className="bg-background">
@@ -36,23 +42,34 @@ export default function AboutPage() {
               resources, and communicate quickly.
             </p>
           </div>
-          <div className="rounded-3xl border border-border bg-[radial-gradient(circle_at_top,_rgba(31,91,216,0.12),_transparent_60%)] p-6 shadow-sm">
-            <p className="text-sm text-muted-foreground">Platform reach</p>
-            <p className="mt-2 text-3xl font-semibold text-foreground">
-              26 regions supported
-            </p>
-            <div className="mt-4 space-y-3 text-sm text-muted-foreground">
-              <div className="flex items-center justify-between">
-                <span>Incident response uptime</span>
-                <span className="font-semibold text-foreground">99.9%</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Average alert latency</span>
-                <span className="font-semibold text-foreground">1.8 min</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Community partners</span>
-                <span className="font-semibold text-foreground">140+</span>
+          <div className="space-y-4">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border shadow-lg">
+              <Image
+                src={imagery.about}
+                alt="Aerial view of river delta infrastructure"
+                fill
+                className="object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+              <p className="text-sm text-muted-foreground">Platform reach</p>
+              <p className="mt-2 text-3xl font-semibold text-foreground">
+                26 regions supported
+              </p>
+              <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+                <div className="flex items-center justify-between">
+                  <span>Incident response uptime</span>
+                  <span className="font-semibold text-foreground">99.9%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Average alert latency</span>
+                  <span className="font-semibold text-foreground">1.8 min</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Community partners</span>
+                  <span className="font-semibold text-foreground">140+</span>
+                </div>
               </div>
             </div>
           </div>

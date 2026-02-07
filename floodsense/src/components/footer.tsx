@@ -40,12 +40,35 @@ export function Footer() {
             </Link>
           </div>
         </div>
-        <div className="mt-8 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
+        <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
           <p>(c) 2025 FloodSense. All rights reserved.</p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <span>Privacy</span>
             <span>Terms</span>
             <span>Security</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://www.linkedin.com"
+              className="text-muted-foreground transition hover:text-foreground"
+              aria-label="Visit FloodSense on LinkedIn"
+            >
+              LinkedIn
+            </a>
+            <a
+              href="https://www.x.com"
+              className="text-muted-foreground transition hover:text-foreground"
+              aria-label="Visit FloodSense on X"
+            >
+              X
+            </a>
+            <a
+              href="https://www.youtube.com"
+              className="text-muted-foreground transition hover:text-foreground"
+              aria-label="Visit FloodSense on YouTube"
+            >
+              YouTube
+            </a>
           </div>
         </div>
       </Container>

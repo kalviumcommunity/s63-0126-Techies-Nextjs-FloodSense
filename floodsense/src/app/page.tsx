@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
@@ -28,20 +29,51 @@ const metrics = [
   { label: 'Operational readiness', value: '92%' },
 ];
 
+const dashboardModules = [
+  {
+    title: 'Live incident queue',
+    detail: 'Prioritized alerts with next-best actions and team status.',
+  },
+  {
+    title: 'Resource readiness',
+    detail: 'Track availability of mobile barriers, drones, and field units.',
+  },
+  {
+    title: 'Forecast intelligence',
+    detail: 'Adaptive risk modeling with hourly confidence updates.',
+  },
+];
+
+const imagery = {
+  hero:
+    'https://images.pexels.com/photos/9404467/pexels-photo-9404467.jpeg?auto=compress&cs=tinysrgb&w=2000',
+  dashboard:
+    'https://images.pexels.com/photos/31550735/pexels-photo-31550735.jpeg?auto=compress&cs=tinysrgb&w=2000',
+};
+
 export default function Home() {
   return (
     <div className="bg-background">
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(31,91,216,0.15),_transparent_55%)]" />
-        <Container className="relative py-16 lg:py-24">
-          <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div className="space-y-6 motion-safe:animate-fade-up">
-              <Badge variant="info">Trusted by resilience teams</Badge>
-              <h1 className="text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
+      <section className="relative min-h-screen overflow-hidden">
+        <Image
+          src={imagery.hero}
+          alt="Aerial view of a flood-prone river landscape"
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/30 to-transparent" />
+        <Container className="relative flex min-h-screen items-center py-16 lg:py-24">
+          <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div className="space-y-6 text-white motion-safe:animate-fade-up">
+              <Badge variant="info" className="bg-white/10 text-white">
+                Trusted by resilience teams
+              </Badge>
+              <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
                 FloodSense is the premium command center for flood risk
                 intelligence.
               </h1>
-              <p className="text-base text-muted-foreground sm:text-lg">
+              <p className="text-base text-white/80 sm:text-lg">
                 Built for leaders who need instant clarity, live coordination,
                 and elegant decision support in every moment.
               </p>
@@ -50,7 +82,7 @@ export default function Home() {
                   <Button size="lg">Launch dashboard</Button>
                 </Link>
                 <Link href="/about">
-                  <Button variant="outline" size="lg">
+                  <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10">
                     Our approach
                   </Button>
                 </Link>
@@ -59,25 +91,25 @@ export default function Home() {
                 {metrics.map((stat) => (
                   <div
                     key={stat.label}
-                    className="rounded-2xl border border-border bg-card p-4 text-sm shadow-sm"
+                    className="rounded-2xl border border-white/15 bg-white/10 p-4 text-sm backdrop-blur"
                   >
-                    <p className="text-2xl font-semibold text-foreground">
-                      {stat.value}
-                    </p>
-                    <p className="text-muted-foreground">{stat.label}</p>
+                    <p className="text-2xl font-semibold">{stat.value}</p>
+                    <p className="text-white/70">{stat.label}</p>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-3xl border border-border bg-card/80 p-6 shadow-xl backdrop-blur motion-safe:animate-fade-in">
+            <div className="rounded-3xl border border-white/15 bg-white/10 p-6 text-white shadow-2xl backdrop-blur motion-safe:animate-fade-in">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/60">
                     Live overview
                   </p>
                   <h2 className="mt-2 text-2xl font-semibold">Northern Corridor</h2>
                 </div>
-                <Badge variant="warning">Elevated</Badge>
+                <Badge variant="warning" className="bg-white/20 text-white">
+                  Elevated
+                </Badge>
               </div>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 {[
@@ -88,19 +120,15 @@ export default function Home() {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-border bg-background p-4 text-sm shadow-sm"
+                    className="rounded-2xl border border-white/15 bg-white/10 p-4 text-sm"
                   >
-                    <p className="text-muted-foreground">{item.label}</p>
-                    <p className="mt-2 text-lg font-semibold text-foreground">
-                      {item.value}
-                    </p>
+                    <p className="text-white/70">{item.label}</p>
+                    <p className="mt-2 text-lg font-semibold">{item.value}</p>
                   </div>
                 ))}
               </div>
-              <div className="mt-6 rounded-2xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
-                <p className="font-semibold text-foreground">
-                  Predicted surge window
-                </p>
+              <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-white/70">
+                <p className="font-semibold text-white">Predicted surge window</p>
                 <p className="mt-2">
                   Peak impact expected between 19:20 and 20:05. Prepare mobile
                   barriers and re-route traffic away from Zone D.
@@ -118,6 +146,39 @@ export default function Home() {
             <span>Hydrology Institute</span>
             <span>Resilience Labs</span>
             <span>RapidAid Network</span>
+          </div>
+        </Container>
+      </section>
+
+      <section>
+        <Container className="py-16 lg:py-24">
+          <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+            <div className="space-y-4 motion-safe:animate-fade-up">
+              <Badge variant="success">Dashboard-style features</Badge>
+              <h2 className="text-3xl font-semibold text-foreground">
+                A dashboard built for the decision-maker.
+              </h2>
+              <p className="text-muted-foreground">
+                Every module is designed to reduce cognitive load and surface
+                the next best action instantly.
+              </p>
+              <div className="grid gap-3">
+                {dashboardModules.map((module) => (
+                  <Card key={module.title} title={module.title}>
+                    {module.detail}
+                  </Card>
+                ))}
+              </div>
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border bg-card shadow-xl">
+              <Image
+                src={imagery.dashboard}
+                alt="Satellite-style view of river delta terrain"
+                fill
+                className="object-cover"
+                loading="lazy"
+              />
+            </div>
           </div>
         </Container>
       </section>
