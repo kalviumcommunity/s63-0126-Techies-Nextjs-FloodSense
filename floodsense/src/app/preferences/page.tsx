@@ -1,7 +1,13 @@
+import Image from 'next/image';
 import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Container } from '@/components/container';
+
+const imagery = {
+  preferences:
+    'https://images.pexels.com/photos/3582392/pexels-photo-3582392.jpeg?auto=compress&cs=tinysrgb&w=2000',
+};
 
 export default function PreferencesPage() {
   return (
@@ -22,6 +28,15 @@ export default function PreferencesPage() {
             <Button variant="outline">Reset defaults</Button>
             <Button>Save changes</Button>
           </div>
+        </div>
+        <div className="relative mt-8 aspect-[5/2] overflow-hidden rounded-3xl border border-border shadow-lg">
+          <Image
+            src={imagery.preferences}
+            alt="Monitoring console controls"
+            fill
+            className="object-cover"
+            loading="lazy"
+          />
         </div>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2 motion-safe:animate-fade-up">

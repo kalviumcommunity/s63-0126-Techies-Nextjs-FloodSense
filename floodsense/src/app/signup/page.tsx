@@ -1,8 +1,14 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Container } from '@/components/container';
+
+const imagery = {
+  auth:
+    'https://images.pexels.com/photos/2239655/pexels-photo-2239655.jpeg?auto=compress&cs=tinysrgb&w=2000',
+};
 
 export default function SignupPage() {
   return (
@@ -86,6 +92,15 @@ export default function SignupPage() {
                   {item}
                 </div>
               ))}
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border shadow-lg">
+              <Image
+                src={imagery.auth}
+                alt="Operations center with monitoring screens"
+                fill
+                className="object-cover"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>

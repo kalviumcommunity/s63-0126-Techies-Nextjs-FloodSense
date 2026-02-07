@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
@@ -35,12 +36,17 @@ const alerts = [
   },
 ];
 
+const imagery = {
+  dashboard:
+    'https://images.pexels.com/photos/2179608/pexels-photo-2179608.jpeg?auto=compress&cs=tinysrgb&w=2000',
+};
+
 export default function DashboardPage() {
   return (
     <div className="bg-background">
       <Container className="py-12 lg:py-16">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between motion-safe:animate-fade-up">
-          <div className="space-y-2">
+        <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-center motion-safe:animate-fade-up">
+          <div className="space-y-3">
             <Badge variant="info">Live operations</Badge>
             <h1 className="text-3xl font-semibold text-foreground sm:text-4xl">
               Flood response dashboard
@@ -49,12 +55,21 @@ export default function DashboardPage() {
               Monitor active districts, coordinate teams, and take action with
               clarity.
             </p>
+            <div className="flex flex-wrap gap-3 pt-2">
+              <Button variant="outline">Download brief</Button>
+              <Link href="/preferences">
+                <Button>Update settings</Button>
+              </Link>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Button variant="outline">Download brief</Button>
-            <Link href="/preferences">
-              <Button>Update settings</Button>
-            </Link>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border shadow-lg">
+            <Image
+              src={imagery.dashboard}
+              alt="River monitoring aerial photography"
+              fill
+              className="object-cover"
+              priority
+            />
           </div>
         </div>
 

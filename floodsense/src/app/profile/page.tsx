@@ -1,12 +1,27 @@
+import Image from 'next/image';
 import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Container } from '@/components/container';
 
+const imagery = {
+  profile:
+    'https://images.pexels.com/photos/3964648/pexels-photo-3964648.jpeg?auto=compress&cs=tinysrgb&w=2000',
+};
+
 export default function ProfilePage() {
   return (
     <div className="bg-background">
       <Container className="py-12 lg:py-16">
+        <div className="relative mb-8 aspect-[5/2] overflow-hidden rounded-3xl border border-border shadow-lg">
+          <Image
+            src={imagery.profile}
+            alt="Weather radar dome and monitoring facility"
+            fill
+            className="object-cover"
+            loading="lazy"
+          />
+        </div>
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <Card>
             <div className="flex items-center gap-4">
