@@ -370,6 +370,20 @@ curl http://localhost:3000/api/auth/protected \
 
 ---
 
+## 13.2 Centralized API Error Handling
+
+FloodSense includes a small, reusable error handler for API routes:
+
+- `src/lib/logger.ts` logs errors in a consistent format
+- `src/lib/apiErrorHandler.ts` formats errors and hides details in production
+
+Usage example (inside an API route):
+```ts
+return handleApiError(err, "Login failed");
+```
+
+---
+
 ## 14. PostgreSQL Schema (Beginner-Level, Normalized)
 
 This project can use PostgreSQL to store **users**, **districts**, and **flood alerts** in a normalized relational structure.
