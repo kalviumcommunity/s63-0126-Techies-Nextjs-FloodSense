@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { sendError, sendSuccess } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
 import { env } from "@/lib/env";
+import { handleApiError } from "@/lib/apiErrorHandler";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -58,11 +59,6 @@ export async function POST(req: Request) {
       "Login successful"
     );
   } catch (err) {
-    return sendError(
-      "Login failed",
-      ERROR_CODES.INTERNAL_ERROR,
-      500,
-      err
-    );
+    return handleApiError(err, "Login failed");
   }
 }
