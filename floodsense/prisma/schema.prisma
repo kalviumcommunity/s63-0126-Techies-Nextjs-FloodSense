@@ -1,108 +1,63 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-//////////////////////////////////////////////////////
-// ENUMS
-//////////////////////////////////////////////////////
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password      String
+  createdAt     DateTime @default(now())
+  alertsCreated Alert[]
 
-enum RiskLevel {
+  @@index([email])
+}
+
+model District {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  state     String
+  country   String   @default("IN")
+  createdAt DateTime @default(now())
+  alerts    Alert[]
+
+  @@index([name])
+  @@index([state])
+}
+
+model Alert {
+  id         String        @id @default(uuid())
+  title      String
+  message    String
+  severity   AlertSeverity
+  status     AlertStatus   @default(PENDING)
+  districtId String
+  createdBy  String
+  issuedAt   DateTime      @default(now())
+  resolvedAt DateTime?
+  creator    User          @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  district   District      @relation(fields: [districtId], references: [id], onDelete: Cascade)
+
+  @@index([districtId])
+  @@index([createdBy])
+  @@index([issuedAt])
+  @@index([status])
+}
+
+enum AlertSeverity {
   LOW
   MODERATE
   HIGH
   SEVERE
 }
 
-//////////////////////////////////////////////////////
-// MODELS
-//////////////////////////////////////////////////////
-
-model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-
-  // relations
-  preferences AlertPreference?
-  alerts      Alert[] // 🔥 alerts user received
-
-  @@index([email])
-}
-
-//////////////////////////////////////////////////////
-
-model District {
-  id        String   @id @default(uuid())
-  name      String
-  state     String
-  latitude  Float
-  longitude Float
-  createdAt DateTime @default(now())
-
-  // relations
-  weather WeatherData[]
-  alerts  Alert[] // 🔥 alerts for this district
-
-  @@unique([name, state])
-}
-
-//////////////////////////////////////////////////////
-
-model WeatherData {
-  id         String @id @default(uuid())
-  districtId String
-
-  rainfallMm  Float
-  temperature Float
-  humidity    Float
-  riskLevel   RiskLevel
-
-  recordedAt DateTime @default(now())
-
-  district District @relation(fields: [districtId], references: [id], onDelete: Cascade)
-
-  @@index([districtId])
-  @@index([recordedAt])
-}
-
-//////////////////////////////////////////////////////
-//NEW: ALERT MODEL 
-//////////////////////////////////////////////////////
-
-model Alert {
-  id        String    @id @default(uuid())
-  message   String
-  severity  RiskLevel
-  createdAt DateTime  @default(now())
-
-  // relations
-  districtId String
-  district   District @relation(fields: [districtId], references: [id], onDelete: Cascade)
-
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([districtId])
-  @@index([createdAt])
-}
-
-//////////////////////////////////////////////////////
-
-model AlertPreference {
-  id     String @id @default(uuid())
-  userId String @unique
-
-  rainfallThreshold Float
-  riskThreshold     RiskLevel
-
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+enum AlertStatus {
+  PENDING
+  ACTIVE
+  RESOLVED
 }
