@@ -2,10 +2,14 @@ import { prisma } from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
 
-export async function GET(_: Request, { params }: any) {
+export async function GET(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params;
     const user = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!user)
@@ -22,9 +26,13 @@ export async function GET(_: Request, { params }: any) {
 }
 
 
-export async function DELETE(_: Request, { params }: any) {
+export async function DELETE(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    await prisma.user.delete({ where: { id: params.id } });
+    const { id } = await params;
+    await prisma.user.delete({ where: { id } });
 
     return sendSuccess(null, "User deleted successfully");
   } catch (err) {

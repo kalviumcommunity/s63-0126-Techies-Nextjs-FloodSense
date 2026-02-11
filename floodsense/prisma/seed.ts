@@ -1,20 +1,25 @@
-const { PrismaClient, RiskLevel } = require("@prisma/client");
+import "dotenv/config";
+import dotenv from "dotenv";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient();
+dotenv.config({ path: ".env.local", override: true });
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
+});
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("🌱 Seeding database...");
 
   const district = await prisma.district.upsert({
-    where: {
-      name_state: { name: "Shamli", state: "Uttar Pradesh" },
-    },
+    where: { name: "Shamli" },
     update: {},
     create: {
       name: "Shamli",
       state: "Uttar Pradesh",
-      latitude: 29.45,
-      longitude: 77.32,
+      country: "IN",
     },
   });
 
@@ -28,23 +33,13 @@ async function main() {
     },
   });
 
-  await prisma.alertPreference.upsert({
-    where: { userId: user.id },
-    update: {},
-    create: {
-      userId: user.id,
-      rainfallThreshold: 50,
-      riskThreshold: RiskLevel.HIGH,
-    },
-  });
-
-  await prisma.weatherData.create({
+  await prisma.alert.create({
     data: {
+      title: "Test Flood Alert",
+      message: "Sample alert for seeding",
+      severity: "HIGH",
       districtId: district.id,
-      rainfallMm: 65,
-      temperature: 30,
-      humidity: 80,
-      riskLevel: RiskLevel.HIGH,
+      createdBy: user.id,
     },
   });
 

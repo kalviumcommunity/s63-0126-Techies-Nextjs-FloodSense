@@ -5,15 +5,16 @@ import { NextResponse } from "next/server";
 const alertSchema = z.object({
   title: z.string().min(1, "Title is required"),
   message: z.string().min(1, "Message is required"),
-  severity: z.enum(["low", "medium", "high"]).optional(),
-  districtId: z.string().optional(),
+  severity: z.enum(["LOW", "MODERATE", "HIGH", "SEVERE"]).default("HIGH"),
+  status: z.enum(["PENDING", "ACTIVE", "RESOLVED"]).default("PENDING"),
+  districtId: z.string().min(1, "District ID is required"),
+  createdBy: z.string().min(1, "Creator user ID is required"),
   issuedAt: z.string().datetime().optional(),
-  expiresAt: z.string().datetime().optional(),
 });
 
 export async function GET() {
   const alerts = await prisma.alert.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { issuedAt: "desc" },
   });
 
   return NextResponse.json(alerts);
@@ -39,14 +40,21 @@ export async function POST(req: Request) {
       );
     }
 
-    // Stub implementation: no database write, just echo back validated payload
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Alert payload accepted (stub, not persisted)",
-        data: parsed.data,
-        timestamp: new Date().toISOString(),
+    const alert = await prisma.alert.create({
+      data: {
+        title: parsed.data.title,
+        message: parsed.data.message,
+        severity: parsed.data.severity as "LOW" | "MODERATE" | "HIGH" | "SEVERE",
+        status: parsed.data.status as "PENDING" | "ACTIVE" | "RESOLVED",
+        districtId: parsed.data.districtId,
+        createdBy: parsed.data.createdBy,
+        issuedAt: parsed.data.issuedAt
+          ? new Date(parsed.data.issuedAt)
+          : undefined,
       },
+    });
+    return NextResponse.json(
+      { success: true, message: "Alert created", data: alert },
       { status: 201 }
     );
   } catch (error) {

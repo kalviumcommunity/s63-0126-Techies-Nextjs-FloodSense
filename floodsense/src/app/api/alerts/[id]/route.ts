@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
   _: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  await prisma.alert.delete({ where: { id: params.id } });
-
+  const { id } = await params;
+  await prisma.alert.delete({ where: { id } });
   return NextResponse.json({ message: "Alert removed" });
 }

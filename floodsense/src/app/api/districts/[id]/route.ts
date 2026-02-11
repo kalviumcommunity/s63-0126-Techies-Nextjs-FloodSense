@@ -3,11 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   _: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const district = await prisma.district.findUnique({
-    where: { id: params.id },
-    include: { weather: true, alerts: true },
+    where: { id },
+    include: { alerts: true },
   });
 
   if (!district)
@@ -16,19 +17,25 @@ export async function GET(
   return NextResponse.json(district);
 }
 
-export async function PUT(req: Request, { params }: any) {
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
   const body = await req.json();
-
   const updated = await prisma.district.update({
-    where: { id: params.id },
+    where: { id },
     data: body,
   });
 
   return NextResponse.json(updated);
 }
 
-export async function DELETE(_: Request, { params }: any) {
-  await prisma.district.delete({ where: { id: params.id } });
-
+export async function DELETE(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  await prisma.district.delete({ where: { id } });
   return NextResponse.json({ message: "Deleted" });
 }
