@@ -1,6 +1,5 @@
 import { sendError, sendSuccess } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
-import { env } from "@/lib/env";
 import jwt from "jsonwebtoken";
 
 export async function GET(req: Request) {
@@ -17,7 +16,15 @@ export async function GET(req: Request) {
 
     const token = authHeader.replace("Bearer ", "").trim();
 
-    const decoded = jwt.verify(token, env.JWT_SECRET);
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret || jwtSecret.length < 16) {
+      return sendError(
+        "Server configuration error",
+        ERROR_CODES.INTERNAL_ERROR,
+        500
+      );
+    }
+    const decoded = jwt.verify(token, jwtSecret);
 
     return sendSuccess(
       { decoded },

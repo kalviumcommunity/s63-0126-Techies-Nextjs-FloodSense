@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from './button';
 import { Container } from './container';
 import { ThemeToggle } from './theme-toggle';
@@ -15,7 +17,11 @@ const primaryLinks = [
 ];
 
 export function Navbar() {
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
 
   return (
     <nav className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
@@ -38,14 +44,34 @@ export function Navbar() {
         </div>
         <div className="hidden items-center gap-3 lg:flex">
           <ThemeToggle />
-          <Link href="/login">
-            <Button variant="ghost" size="sm">
-              Log in
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button size="sm">Sign up</Button>
-          </Link>
+          {!isAuthPage && (
+            isLoading ? (
+              <span className="text-sm text-muted-foreground">Loading...</span>
+            ) : isAuthenticated && user ? (
+              <>
+                <Link
+                  href="/profile"
+                  className="rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                >
+                  {user.name}
+                </Link>
+                <Button variant="ghost" size="sm" onClick={logout}>
+                  Log out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm">Sign up</Button>
+                </Link>
+              </>
+            )
+          )}
         </div>
         <button
           type="button"
@@ -73,14 +99,35 @@ export function Navbar() {
               ))}
               <div className="flex items-center gap-3 pt-2">
                 <ThemeToggle />
-                <Link href="/login">
-                  <Button variant="ghost" size="sm">
-                    Log in
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button size="sm">Sign up</Button>
-                </Link>
+                {!isAuthPage && (
+                  isLoading ? (
+                    <span className="text-sm text-muted-foreground">Loading...</span>
+                  ) : isAuthenticated && user ? (
+                    <>
+                      <Link
+                        href="/profile"
+                        className="rounded-md px-3 py-2 text-sm font-medium text-foreground"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {user.name}
+                      </Link>
+                      <Button variant="ghost" size="sm" onClick={() => { logout(); setIsOpen(false); }}>
+                        Log out
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/login" onClick={() => setIsOpen(false)}>
+                        <Button variant="ghost" size="sm">
+                          Log in
+                        </Button>
+                      </Link>
+                      <Link href="/signup" onClick={() => setIsOpen(false)}>
+                        <Button size="sm">Sign up</Button>
+                      </Link>
+                    </>
+                  )
+                )}
               </div>
             </div>
           </Container>

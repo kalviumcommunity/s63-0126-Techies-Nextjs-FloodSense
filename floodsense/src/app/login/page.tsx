@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
@@ -16,6 +17,7 @@ const imagery = {
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,46 +27,32 @@ export default function LoginPage() {
     e.preventDefault();
     setMessage(null);
     setLoading(true);
-    console.log('[Login] Submitting form:', { email });
 
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
-      console.log('[Login] Response:', { status: res.status, hasToken: !!data?.data?.token });
 
       if (!res.ok) {
-        const errorMsg = data?.message ?? 'Login failed. Please try again.';
-        setMessage({ type: 'error', text: errorMsg });
+        setMessage({ type: 'error', text: data?.message ?? 'Login failed. Please try again.' });
         setLoading(false);
         return;
       }
 
       const token = data?.data?.token;
       const user = data?.data?.user;
-      if (token) {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('floodsense_token', token);
-          if (user) {
-            localStorage.setItem('floodsense_user', JSON.stringify(user));
-          }
-        }
+      if (token && user?.id && user?.name && user?.email) {
+        login({ id: user.id, name: user.name, email: user.email }, token);
       }
 
       setMessage({ type: 'success', text: data.message ?? 'Login successful!' });
-      setTimeout(() => router.push('/dashboard'), 1000);
-    } catch (err) {
-      console.error('[Login] Fetch error:', err);
-      setMessage({
-        type: 'error',
-        text: 'Network error. Please check your connection and try again.',
-      });
+      setTimeout(() => router.push('/dashboard'), 800);
+    } catch {
+      setMessage({ type: 'error', text: 'Network error. Please check your connection and try again.' });
     } finally {
       setLoading(false);
     }
@@ -97,6 +85,7 @@ export default function LoginPage() {
                 fill
                 className="object-cover"
                 loading="lazy"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           </div>
@@ -135,13 +124,6 @@ export default function LoginPage() {
                   className="h-11 rounded-2xl border border-border bg-background px-4 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </label>
-              <div className="flex items-center justify-between text-xs">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" className="h-4 w-4 accent-primary" />
-                  Keep me signed in
-                </label>
-                <span className="text-muted-foreground">Forgot password?</span>
-              </div>
               <Button type="submit" className="w-full" size="lg" disabled={loading}>
                 {loading ? 'Signing in...' : 'Log in'}
               </Button>

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
@@ -14,6 +15,7 @@ const imagery = {
 };
 
 export default function SignupPage() {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,7 +27,6 @@ export default function SignupPage() {
     e.preventDefault();
     setMessage(null);
     setLoading(true);
-    console.log('[Signup] Submitting form:', { name, email, agreed });
 
     if (!agreed) {
       setMessage({ type: 'error', text: 'Please agree to the terms and privacy policy.' });
@@ -43,7 +44,6 @@ export default function SignupPage() {
       });
 
       const data = await res.json();
-      console.log('[Signup] Response:', { status: res.status, data });
 
       if (!res.ok) {
         const errorMsg = data?.message ?? 'Signup failed. Please try again.';
@@ -57,8 +57,8 @@ export default function SignupPage() {
       setEmail('');
       setPassword('');
       setAgreed(false);
-    } catch (err) {
-      console.error('[Signup] Fetch error:', err);
+      setTimeout(() => router.push('/login'), 1200);
+    } catch {
       setMessage({
         type: 'error',
         text: 'Network error. Please check your connection and try again.',

@@ -1,18 +1,14 @@
+/**
+ * Shared types for API responses and domain models.
+ */
+
 export interface FloodAlert {
   id: string;
   district: string;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  riskLevel: "low" | "medium" | "high" | "critical";
   waterLevel: number;
   timestamp: string;
-  status: 'active' | 'resolved';
-}
-
-export interface District {
-  id: string;
-  name: string;
-  population: number;
-  elevation: number;
-  floodProne: boolean;
+  status: "active" | "resolved";
 }
 
 export interface WeatherData {

@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
-import { Badge } from '@/components/badge';
+import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Container } from '@/components/container';
@@ -9,7 +12,57 @@ const imagery = {
     'https://images.pexels.com/photos/3964648/pexels-photo-3964648.jpeg?auto=compress&cs=tinysrgb&w=2000',
 };
 
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+}
+
 export default function ProfilePage() {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="bg-background">
+        <Container className="py-12 lg:py-16">
+          <div className="h-64 animate-pulse rounded-2xl bg-muted" />
+          <div className="mt-6 h-48 animate-pulse rounded-2xl bg-muted" />
+        </Container>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="bg-background">
+        <Container className="py-12 lg:py-16">
+          <Card
+            title="Profile"
+            description="Sign in to view your profile."
+            className="max-w-md"
+          >
+            <div className="space-y-4">
+              <p className="text-muted-foreground">
+                Create an account or log in to access your profile and preferences.
+              </p>
+              <div className="flex gap-3">
+                <Link href="/login">
+                  <Button>Log in</Button>
+                </Link>
+                <Link href="/signup">
+                  <Button variant="outline">Sign up</Button>
+                </Link>
+              </div>
+            </div>
+          </Card>
+        </Container>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background">
       <Container className="py-12 lg:py-16">
@@ -20,101 +73,46 @@ export default function ProfilePage() {
             fill
             className="object-cover"
             loading="lazy"
+            sizes="(max-width: 768px) 100vw, 1200px"
           />
         </div>
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <Card>
             <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground shadow-sm">
-                AR
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground shadow-sm">
+                {getInitials(user.name)}
               </div>
               <div>
-                <p className="text-lg font-semibold text-foreground">
-                  Avery Rivers
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Regional Operations Lead
-                </p>
-                <Badge variant="success" className="mt-2">
-                  On call
-                </Badge>
+                <p className="text-lg font-semibold text-foreground">{user.name}</p>
+                <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>
             </div>
             <div className="mt-6 space-y-3 text-sm text-muted-foreground">
               <div className="flex items-center justify-between">
+                <span>Name</span>
+                <span className="font-semibold text-foreground">{user.name}</span>
+              </div>
+              <div className="flex items-center justify-between">
                 <span>Email</span>
-                <span className="font-semibold text-foreground">
-                  arivers@response.gov
-                </span>
+                <span className="font-semibold text-foreground">{user.email}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span>Phone</span>
-                <span className="font-semibold text-foreground">
-                  +1 (555) 482-1902
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Region</span>
-                <span className="font-semibold text-foreground">
-                  Coastal North
-                </span>
-              </div>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button size="sm">Edit profile</Button>
-              <Button size="sm" variant="outline">
-                Manage access
-              </Button>
             </div>
           </Card>
 
-          <div className="space-y-6 motion-safe:animate-fade-up">
+          <div className="space-y-6">
             <Card
-              title="Current focus"
-              description="Active initiatives and response readiness."
+              title="Quick actions"
+              description="Manage your account and settings."
             >
-              <div className="space-y-3 text-sm text-muted-foreground">
-                <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3">
-                  <p className="font-semibold text-foreground">
-                    Lower Delta surge planning
-                  </p>
-                  <p>Coordinating barrier deployment for Zone 4.</p>
-                </div>
-                <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3">
-                  <p className="font-semibold text-foreground">
-                    Community outreach
-                  </p>
-                  <p>Preparing public advisory for weekend rainfall.</p>
-                </div>
-              </div>
-            </Card>
-            <Card
-              title="Recent activity"
-              description="Latest actions across your team."
-            >
-              <div className="space-y-4 text-sm text-muted-foreground">
-                {[
-                  'Approved escalation for Harbor East alert',
-                  'Reviewed field sensor anomalies in Sector 3',
-                  'Scheduled debrief with Emergency Services',
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-start gap-3"
-                  >
-                    <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
-                    <p>{item}</p>
-                  </div>
-                ))}
-              </div>
-              <Button variant="outline" size="sm" className="mt-6 w-full">
-                View full log
-              </Button>
-            </Card>
-            <Card title="Empty state" description="When there are no scheduled shifts.">
-              <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-5 text-sm text-muted-foreground">
-                No shifts scheduled for the next 48 hours. You will be notified
-                if new coverage is required.
+              <div className="flex flex-wrap gap-3">
+                <Link href="/preferences">
+                  <Button size="sm">Preferences</Button>
+                </Link>
+                <Link href="/dashboard">
+                  <Button size="sm" variant="outline">
+                    Dashboard
+                  </Button>
+                </Link>
               </div>
             </Card>
           </div>

@@ -4,6 +4,7 @@ import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Container } from '@/components/container';
+import { DashboardGreeting } from '@/components/dashboard-greeting';
 
 const stats = [
   { label: 'Active alerts', value: '12', tone: 'warning' as const },
@@ -51,6 +52,7 @@ export default function DashboardPage() {
             <h1 className="text-3xl font-semibold text-foreground sm:text-4xl">
               Flood response dashboard
             </h1>
+            <DashboardGreeting />
             <p className="text-muted-foreground">
               Monitor active districts, coordinate teams, and take action with
               clarity.

@@ -2,19 +2,17 @@ import { prisma } from "@/lib/prisma";
 import { sendError, sendSuccess } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
 import bcrypt from "bcryptjs";
+import { logger } from "@/lib/logger";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
 
 export async function POST(req: Request) {
-  console.log("[Auth/Signup] POST request received");
   try {
     const body = await req.json();
     const { name, email, password } = body ?? {};
-    console.log("[Auth/Signup] Body parsed:", { hasName: !!name, hasEmail: !!email, hasPassword: !!password });
 
     if (!name || !email || !password) {
-      console.log("[Auth/Signup] Validation failed: missing fields");
       return sendError(
         "Name, email, and password are required",
         ERROR_CODES.VALIDATION_ERROR,
@@ -31,12 +29,10 @@ export async function POST(req: Request) {
     }
 
     if (!EMAIL_REGEX.test(trimmedEmail)) {
-      console.log("[Auth/Signup] Validation failed: invalid email format");
       return sendError("Invalid email format", ERROR_CODES.VALIDATION_ERROR, 400);
     }
 
     if (trimmedPassword.length < MIN_PASSWORD_LENGTH) {
-      console.log("[Auth/Signup] Validation failed: password too short");
       return sendError(
         `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
         ERROR_CODES.VALIDATION_ERROR,
@@ -49,7 +45,6 @@ export async function POST(req: Request) {
     });
 
     if (existingUser) {
-      console.log("[Auth/Signup] User already exists:", trimmedEmail);
       return sendError(
         "A user with this email already exists",
         ERROR_CODES.VALIDATION_ERROR,
@@ -58,7 +53,6 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(trimmedPassword, 10);
-    console.log("[Auth/Signup] Password hashed, creating user...");
 
     const user = await prisma.user.create({
       data: {
@@ -74,10 +68,9 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log("[Auth/Signup] User created successfully:", user.id);
     return sendSuccess(user, "Account created successfully", 201);
   } catch (err) {
-    console.error("[Auth/Signup] Error:", err);
+    logger.error("Signup failed", err);
     return sendError(
       "Signup failed",
       ERROR_CODES.INTERNAL_ERROR,

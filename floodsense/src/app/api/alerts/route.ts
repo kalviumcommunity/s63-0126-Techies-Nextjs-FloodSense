@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       { success: true, message: "Alert created", data: alert },
       { status: 201 }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         success: false,
