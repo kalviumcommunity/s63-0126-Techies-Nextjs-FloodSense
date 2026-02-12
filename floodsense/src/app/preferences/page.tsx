@@ -36,6 +36,7 @@ export default function PreferencesPage() {
             fill
             className="object-cover"
             loading="lazy"
+            sizes="(max-width: 768px) 100vw, 1200px"
           />
         </div>
 
