@@ -4,6 +4,7 @@ import { Badge } from '@/components/badge';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { Container } from '@/components/container';
+import { LiveOverviewCard } from '@/components/live-overview-card';
 
 const highlights = [
   {
@@ -99,42 +100,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="rounded-3xl border border-white/15 bg-white/10 p-6 text-white shadow-2xl backdrop-blur motion-safe:animate-fade-in">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-white/60">
-                    Live overview
-                  </p>
-                  <h2 className="mt-2 text-2xl font-semibold">Northern Corridor</h2>
-                </div>
-                <Badge variant="warning" className="bg-white/20 text-white">
-                  Elevated
-                </Badge>
-              </div>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {[
-                  { label: 'Rain intensity', value: '18 mm/hr' },
-                  { label: 'River height', value: '4.8 m' },
-                  { label: 'Evacuation zones', value: '6 active' },
-                  { label: 'Sensors online', value: '128 of 132' },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-2xl border border-white/15 bg-white/10 p-4 text-sm"
-                  >
-                    <p className="text-white/70">{item.label}</p>
-                    <p className="mt-2 text-lg font-semibold">{item.value}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-white/70">
-                <p className="font-semibold text-white">Predicted surge window</p>
-                <p className="mt-2">
-                  Peak impact expected between 19:20 and 20:05. Prepare mobile
-                  barriers and re-route traffic away from Zone D.
-                </p>
-              </div>
-            </div>
+            <LiveOverviewCard />
           </div>
         </Container>
       </section>
